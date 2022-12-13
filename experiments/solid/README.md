@@ -2,7 +2,16 @@
 
 ## Prerequisites
 
-*  Node.js >= 12
+*  Node.js >= 12 (<https://nodejs.org/en/download/>)
+* NPX
+* 2 web browsers that supports private windows (Why 2? So you can log in as two different users without sharing cookies.)
+
+After installing Node.js, install NPX:
+
+```bash
+# Open terminal, and run:
+npm install -g npx
+```
 
 ## Experiments
 
