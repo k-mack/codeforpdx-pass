@@ -138,3 +138,5 @@ _It is cute!_
 
 It's been a long day, with the hike and all.
 But he sits back and thinks, _Secure Data Stores are kind of neat_.
+
+***Fin.***
