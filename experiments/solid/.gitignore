@@ -1,0 +1,6 @@
+*/node_modules/
+
+# Don't track the directory storing the server-side data
+**/govt-server-data-dir/*
+# Except `.gitkeep`, which is only there to make sure its parent directory exists upon `git clone`
+!**/govt-server-data-dir/.gitkeep
