@@ -27,7 +27,6 @@ Among some of the state-recommend file browsing applications for Pods, she sees 
 A seasonal stout in hand, she selects the link to the hosted application.
 _Learning. Yay._
 
-
 ## Setup
 
 * Follow the previous experiment's setup

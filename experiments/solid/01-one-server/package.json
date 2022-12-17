@@ -1,8 +1,4 @@
 {
-  "scripts": {
-    "start": "npx community-solid-server -c config-mashlib.json",
-    "start:dev": "npx community-solid-server -c config-mashlib-dev.json"
-  },
   "dependencies": {
     "@solid/community-server": "^5.1.0",
     "penny-pod-inspector": "^0.720960554.3465506986"
