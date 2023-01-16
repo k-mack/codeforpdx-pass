@@ -1,0 +1,18 @@
+{
+  "name": "solid-node-client-fun",
+  "version": "0.0.1",
+  "description": "access solid pod from node process",
+  "type": "module",
+  "engines": {
+    "node": ">=12"
+  },
+  "engine-strict": true,
+  "keywords": [],
+  "author": "Kevin Macksamie",
+  "license": "MIT",
+  "dependencies": {
+    "@inrupt/solid-client": "^1.24.0",
+    "@inrupt/vocab-common-rdf": "^1.0.5",
+    "solid-node-client": "^2.1.10"
+  }
+}
