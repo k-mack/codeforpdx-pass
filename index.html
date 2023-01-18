@@ -83,6 +83,7 @@
           <dd id="labelQueryData" class="labelStatus">...not written yet...</dd>
         </dl>
       </div>
+      <!-- div for delete -->
       <div hidden="hidden" id="delete" class="panel">
         <div class="row">
           <form id="deleteDocument">
@@ -104,10 +105,28 @@
           <dd id="labelDeleteDocument" class="labelStatus">...not written yet...</dd>
         </dl>
       </div>
-     <div class="panel">
-
-          <p id="testQuery"> </p>
-
+      <!-- div for query another pod -->
+      <div hidden="hidden" id="crossPodQuery" class="panel">
+        <div class="row">
+          <form id="crossPodQueryDocument">
+            <label id="writelabel" for="input_file">Paste users pod url to query from</label>
+           <input
+              size="60"
+             type="text"
+             id="input_crossPodQueryDocument"
+             name="input_crossPodQueryDocument"
+           />
+             <br/>
+            <button type="submit">
+              Query
+            </button>
+          </form>
+        </div>
+        <dl class="display">
+          <dt>Writing status:&nbsp</dt>
+          <dd id="labelcrossQueryDocument" class="labelStatus">...not written yet...</dd>
+        </dl>
+      </div>
      </div>
    </body>
  </html>
