@@ -3,8 +3,9 @@ import {
   getSourceUrl,
   getSolidDataset,
   saveSolidDatasetInContainer,
-  // getStringWithLocale,
+  getStringNoLocale,
   getStringNoLocaleAll,
+  getUrlAll,
   getThingAll,
   saveSolidDatasetAt,
   buildThing,
@@ -13,9 +14,15 @@ import {
   setThing,
   // deleteSolidDataset, // for delete dataset
   deleteFile,
-  createContainerAt, // for delete file
+  createContainerAt,
 } from "@inrupt/solid-client";
-import { Session } from "@inrupt/solid-client-authn-browser";
+import {
+  Session,
+  // login,
+  handleIncomingRedirect,
+  fetch,
+  getDefaultSession,
+} from "@inrupt/solid-client-authn-browser";
 // login,
 // handleIncomingRedirect, // for delete dataset
 // getDefaultSession, // for delete dataset
@@ -36,10 +43,12 @@ document.getElementById(
 // session object constructor is called and assigned to session constant;
 const session = new Session();
 
+// variables for HTML form fields;
 const buttonLogin = document.getElementById("btnLogin");
 const writeForm = document.getElementById("writeForm");
 const queryForm = document.getElementById("queryData");
 const deleteForm = document.getElementById("deleteDocument");
+const crossPodQueryForm = document.getElementById("crossPodQueryDocument");
 
 // 1a. Start Login Process. Call login() function from session class;
 // https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-browser/classes/Session.html#login  ;
@@ -67,10 +76,11 @@ async function handleRedirectAfterLogin() {
       "labelStatus"
     ).innerHTML = `Your session is logged in with the WebID [<a target="_blank" href="${session.info.webId}">${session.info.webId}</a>].`;
     document.getElementById("labelStatus").setAttribute("role", "alert");
-    // populates fields for write and query by removing hidden attribute from divs;
+    // once logged in removes hidden attributes from HTML fields displaying form fields;
     document.getElementById("write").removeAttribute("hidden");
     document.getElementById("query").removeAttribute("hidden");
     document.getElementById("delete").removeAttribute("hidden");
+    document.getElementById("crossPodQuery").removeAttribute("hidden");
     console.log(`session info: ${session.info.webId.split("profile")[0]}`);
   }
 }
@@ -316,19 +326,88 @@ async function deleteDocument() {
     });
 }
 
-// test for file delete because pod browser is too slow.
-// try {
-//   // Delete the specified file from the Pod.
-//   await deleteFile(
-//     "https://example.com/some/boring/file", // File to delete
-//     { fetch: fetch } // fetch function from authenticated session
-//   );
-//   console.log("Deleted::  https://example.com/some/boring/file");
-// } catch (err) {
-//   console.error(err);
-// }
+async function crossPodQuery() {
+  // specify url from where you want to call data. In this case folder as you need to check if ttl file already exists;
+  const otherPodData = document.getElementById(
+    "input_crossPodQueryDocument"
+  ).value;
 
-// end of test for file delete
+  let checkDataSetForTTL = await getSolidDataset(
+    otherPodData,
+    { fetch: session.fetch } // fetch function from authenticated session
+  );
+  function checkTtl() {
+    const ttlExists = [];
+    //get all things in dataset;
+    const items = getThingAll(checkDataSetForTTL);
+    for (item of items) {
+      //check if item ends with ttl if yes push;
+      if (item.url.slice(-3) == "ttl") {
+        ttlExists.push(item.url);
+      }
+    }
+    return ttlExists;
+  }
+
+  //even if several ttl exist we use always the first one - no reason for this. easiest solution;
+  const ttl = checkTtl()[0];
+  // if no ttl is found display text below  and set attributes listed to html;
+  if (!ttl) {
+    document.getElementById(
+      "labelcrossQueryDocument"
+    ).textContent = `No Data Found To Be Queried`;
+    document
+      .getElementById("labelcrossQueryDocument")
+      .setAttribute("role", "alert");
+  } else {
+    // otherwise retrieve the dataset and append to variable;
+    const myDataset = await getSolidDataset(
+      ttl,
+      { fetch: fetch } // fetch function from authenticated session;
+    );
+
+    // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/thing_thing.html#getthingall  ;
+    const allThingsDataSet = getThingAll(myDataset);
+
+    console.log(allThingsDataSet);
+
+    let documentValue = document.getElementById("crossQueryDocument").value;
+    console.log(documentValue);
+    function queryDataSet() {
+      let matches = [];
+      for (item of allThingsDataSet) {
+        if (
+          getStringNoLocaleAll(item, "http://schema.org/identifier") ==
+          documentValue
+        ) {
+          matches.push(item.url);
+        }
+      }
+      return matches;
+    }
+
+    const queriedData = queryDataSet();
+
+    if (queriedData.length > 0) {
+      document.getElementById(
+        "labelcrossQueryDocument"
+      ).textContent = `Found the following matches for ${documentValue}: ${queriedData.join(
+        ", "
+      )}`;
+      document
+        .getElementById("labelcrossQueryDocument")
+        .setAttribute("role", "alert");
+    } else {
+      document.getElementById(
+        "labelcrossQueryDocument"
+      ).textContent = `No Matches Found For ${documentValue}`;
+      document
+        .getElementById("labelcrossQueryDocument")
+        .setAttribute("role", "alert");
+    }
+    console.log("matches Found: ", queriedData);
+  }
+}
 
 // functions for buttons defined at start of program;
 buttonLogin.onclick = function () {
@@ -351,44 +430,13 @@ deleteForm.addEventListener("submit", (event) => {
   deleteDocument();
 });
 
-/////////// for sparql query test not done yet;
-let testQuery = document.getElementById("testQuery");
-let queryResult = testQuery.innerHTML;
-
-// let testQuery = document.getElementById("testQuery").innerHTML()
-///////////
-
-// 1 // 1 Importing external libraries
-// 2 import { fetch } from 'solid−auth−client';
-// 3 const hellowWorldURL = 'https://janschill.solidcommunity.net/public/hello−world.ttl';
-// 4 const $rdf = require('rdflib');
-// 5
-// 6 // 2 Setting up local store
-// 7 const store = $rdf.graph();
-// 8 // 3 Patching browser fetch function
-// 9 const fetcher = new $rdf.Fetcher(store, {
-// 10 fetch: async (url, options) => {
-// 11 return await fetch(url, options)
-// 12 }
-// 13 });
-// 14 // 4 Creating linked resource
-// 15 const subject = store.sym(`${hellowWorldURL}#this`);
-// 16 const predicate = store.sym('https://example.org/message');
-// 17 const object = store.literal('Hello World');
-// 18 const document = subject.doc();
-// 19
-// 20 async function main(){
-// 21 // 5 Login using solid−auth−client
-// 22 // 6 Adding resource to local store
-// 23 store.add(subject, predicate, object, document);
-// 24 // 7 Loading updated local store to remote server
-// 25 await fetcher.putBack(document);
-// 26 }
-// 27 main();
+crossPodQueryForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  crossPodQuery();
+});
 
 // 1 Import External Libraries The two libraries help with the intricate work of authentication with a Solid
 // data pod and all the needed work with RDF data.
-// 13
 // 2 Setting Up Local Store A local RDF store or graph is created and can be used to add, remove, or update
 // the resource in it. At the moment, it is not synchronized with any remote graph and is empty.
 // 3 Patch Browser Fetch Function The Fetcher is a helper to connect with a remote store. The local store
@@ -404,11 +452,7 @@ let queryResult = testQuery.innerHTML;
 // 7 Updating Remote Store with Local Store The local store is now uploaded to the remote server and updates
 // the resource specified.
 
-// TEST PROFILE
-// https://testorg.solidcommunity.net/profile/card#me
-
 // LINKS FOR AUTH setup
-
 // https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-browser/classes/Session.html#info
 // https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/authenticate-client/
 // https://github.com/linkeddata/rdflib.js/
@@ -419,33 +463,6 @@ let queryResult = testQuery.innerHTML;
 // https://docs.inrupt.com/ess/latest/security/identity-based-access/
 // https://docs.inrupt.com/ess/latest/security/acp/
 // https://github.com/solid-contrib/solid-node-client
-
-// # ACL resource for the profile Inbox
-
-// @prefix acl: <http://www.w3.org/ns/auth/acl#>.
-// @prefix foaf: <http://xmlns.com/foaf/0.1/>.
-
-// <#owner>
-//     a acl:Authorization;
-
-//     acl:agent
-//         <https://otman.solid.community/profile/card#me>;
-
-//     acl:accessTo <./>;
-//     acl:defaultForNew <./>;
-
-//     acl:mode
-//         acl:Read, acl:Write, acl:Control.
-
-// # Public-appendable but NOT public-readable
-// <#public>
-//     a acl:Authorization;
-
-//     acl:agentClass foaf:Agent;  # everyone
-
-//     acl:accessTo <./>;
-
-//     acl:mode acl:Append.
 
 // LINKS FOR FS
 // https://forum.solidproject.org/t/problem-with-retrieving-pieces-of-data-from-separate-files/5271
@@ -460,12 +477,4 @@ let queryResult = testQuery.innerHTML;
 //     at Session.login (Session.ts:217:28)
 //     at login (defaultSession.ts:65:18)
 //     at buttonLogin.onclick (index.js:317:3)
-//
-
-// LOGINS
-
-// User: testorg, Password: @LBjLpFpiQf7aJK
-// URL https://testorg.solidcommunity.net/profile/card#me
-
-// passTest1  passPass1!
 //
