@@ -1,3 +1,5 @@
+// PASS solid pod functionality demo with Inrupt libraries;
+
 import {
   saveFileInContainer,
   getSourceUrl,
@@ -12,21 +14,10 @@ import {
   createSolidDataset,
   createThing,
   setThing,
-  // deleteSolidDataset, // for delete dataset
   deleteFile,
   createContainerAt,
 } from "@inrupt/solid-client";
-import {
-  Session,
-  // login,
-  handleIncomingRedirect,
-  fetch,
-  getDefaultSession,
-} from "@inrupt/solid-client-authn-browser";
-// login,
-// handleIncomingRedirect, // for delete dataset
-// getDefaultSession, // for delete dataset
-// fetch, // for delete dataset
+import { Session, fetch } from "@inrupt/solid-client-authn-browser";
 
 import { rdf } from "@inrupt/solid-client/dist/constants";
 import { SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf";
@@ -40,6 +31,7 @@ document.getElementById(
 ).innerHTML = `[<a target="_blank" href="${SOLID_IDENTITY_PROVIDER}">${SOLID_IDENTITY_PROVIDER}</a>]`;
 
 // https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-node/classes/Session.html#constructor  ;
+// https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-node/classes/Session.html#info ;
 // session object constructor is called and assigned to session constant;
 const session = new Session();
 
@@ -50,26 +42,26 @@ const queryForm = document.getElementById("queryData");
 const deleteForm = document.getElementById("deleteDocument");
 const crossPodQueryForm = document.getElementById("crossPodQueryDocument");
 
-// 1a. Start Login Process. Call login() function from session class;
 // https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-browser/classes/Session.html#login  ;
+// 1a. Start Login Process. Call login() function from session class, login is finshed by 1b. - handleRedirectAfterLogin();
+// sends request to pod provider "SOLID_IDENTITY_PROVIDER" for OpenID Connect Core authorization;
 async function login() {
+  // isLoggedIn(boolean)
   if (!session.info.isLoggedIn) {
     await session.login({
       oidcIssuer: SOLID_IDENTITY_PROVIDER, //users identity provider
       redirectUrl: window.location.href, //  url to redirect to after log in, in this case its current page URL;
-      // NOT COMPLETED: clientName is trying to display the app name upon login;
-      // clientName: "PASS",
     });
   }
 }
 
-// 1b. Login Redirect. Call handleIncomingRedirect() function from session class;
-// after login, finish the process by retrieving session information;
-// https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-browser/classes/Session.html#handleincomingredirect  ;
+// 1b. Login Redirect. Call handleIncomingRedirect() function from session class to complete login;
+// after login, finish the process by retrieving session information for pod provider to client;
 async function handleRedirectAfterLogin() {
+  // https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-browser/classes/Session.html#handleincomingredirect  ;
   // window.location.href refers to current page URL;
   await session.handleIncomingRedirect(window.location.href);
-  // isLoggedIn:boolean
+  // isLoggedIn(boolean)
   if (session.info.isLoggedIn) {
     // changes the text of the labelStatus <p> to logged in webID;
     document.getElementById(
@@ -81,16 +73,15 @@ async function handleRedirectAfterLogin() {
     document.getElementById("query").removeAttribute("hidden");
     document.getElementById("delete").removeAttribute("hidden");
     document.getElementById("crossPodQuery").removeAttribute("hidden");
+    // displays the logged in pod location in the console;
     console.log(`session info: ${session.info.webId.split("profile")[0]}`);
   }
 }
 
 // Function defined above is invoked causing re-direct to index.html;
-// If function is called when not part of the login redirect, the function is a no-op;
 handleRedirectAfterLogin();
 
 // 2. Write to profile;
-// https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-node/classes/Session.html#info  ;
 async function handleFiles() {
   // assigning string https://USERNAME.solidcommunity.net/ to const, replace username with unique webId;
   const MY_POD_URL = session.info.webId.split("profile")[0];
@@ -105,9 +96,12 @@ async function handleFiles() {
   // logs the file added through input_file HTML form;
   console.log(fileList);
 
+  // uses the webID and value of drop down menu for document type, example: passport, bank statement;
   const folder = MY_POD_URL + documentValue;
+  // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/resource_solidDataset.html#createcontainerat ;
+  // takes in a URL that is assigned to folder and returns a promise with dataset and server resource info;
   await createContainerAt(folder, { fetch: session.fetch }).then((response) => {
-    console.log("hello", response);
+    console.log("Dataset Information", response);
   });
 
   // assigning function to upload file, provide file from HTML input defined above and url where to upload;
@@ -119,17 +113,17 @@ async function handleFiles() {
 
   // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/resource_solidDataset.html#getsoliddataset  ;
   let checkDataSetForTTL = await getSolidDataset(
-    // takes in the URL to fetch a SolidDataset from;
+    // takes in the URL to fetch a SolidDataset from, in this case the pod URL + document value;
     exampleSolidDatasetURL,
     { fetch: session.fetch } // fetch function from authenticated session returns a promise resolving to dataset or rejecting if failed;
   );
 
-  // check if ttl file is already existing or not. If file exists you will append the existing ttl file;
+  // check if ttl file already exists. If file exists you will append the existing ttl file;
   // if none exist you need to create a new data set;
   function checkTtl() {
     const ttlExists = [];
-    // get all things in dataset;
     // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/thing_thing.html#getthingall  ;
+    // get all things in dataset;
     const items = getThingAll(checkDataSetForTTL);
     for (item of items) {
       //check if item ends with ttl if yes push;
@@ -152,18 +146,18 @@ async function handleFiles() {
     descriptionValue = "No Description provided";
   }
 
-  // create thing for document you just uploaded;
+  // create thing for document you just uploaded, this is the ttl schema;
   // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/thing_build.html#buildthing  ;
-  // createThing is imported from solid-inrupt-client;
   // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/thing_thing.html#creatething  ;
+  // build thing takes in create thing to specify URL and has methods to add properties the name we use here is the type of file and the pod URL;
   const toBeUpdated = buildThing(createThing({ name: uploadedFile }))
-    // set identifier, enddate and description. Using noLocale preserves existing values;
+    // set name, identifier, end date and description. Using noLocale preserves existing values;
     // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/thing_add.html#addstringnolocale  ;
     .addStringNoLocale(SCHEMA_INRUPT.name, uploadedFile)
     .addStringNoLocale(SCHEMA_INRUPT.identifier, documentValue)
     .addStringNoLocale(SCHEMA_INRUPT.endDate, endDateValue)
     .addStringNoLocale(SCHEMA_INRUPT.description, descriptionValue)
-    // final call to build() returns a cloned thing with updated values;
+    // final call to build() returns a cloned thing with updated values, this is important!;
     .build();
 
   // logging the 0th index ttl file in the console;
@@ -178,9 +172,9 @@ async function handleFiles() {
       { fetch: session.fetch } // fetch function from authenticated session;
     );
     console.log("called orginal dataset: ", myDataset);
-    //get thing you want to update by specifying the url of the file and run against the whole dataset;
 
-    // update dataset with thing;
+    // get thing you want to update by specifying the url of the file and run against the whole dataset;
+    // update dataset with current thing and updated ;
     myDataset = setThing(myDataset, toBeUpdated);
 
     // save dataset;
@@ -464,17 +458,5 @@ crossPodQueryForm.addEventListener("submit", (event) => {
 // https://docs.inrupt.com/ess/latest/security/acp/
 // https://github.com/solid-contrib/solid-node-client
 
-// LINKS FOR FS
-// https://forum.solidproject.org/t/problem-with-retrieving-pieces-of-data-from-separate-files/5271
-// https://docs.inrupt.com/ess/latest/pod-resources/
-
 // CREATING A POD
 // https://docs.inrupt.com/ess/latest/services/service-pod-management/#pod-storage-resource-rdf
-
-//
-// apparently clearing browser cache can cause an error with loigin and "tokeType"
-// Session.ts:217 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'tokenType')
-//     at Session.login (Session.ts:217:28)
-//     at login (defaultSession.ts:65:18)
-//     at buttonLogin.onclick (index.js:317:3)
-//
