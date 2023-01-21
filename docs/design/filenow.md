@@ -1,9 +1,12 @@
-# Document Lookup
+# FileNow: Design Document
 
 ## Overview
 
-This document is written for the PASS development team although readers do not need a technical background.
-Its purpose is to propose an alternative solution to the problem identified by the PASS project.
+FileNow offers a risk-mitigated solution to simplify
+storing and locating files across multiple cloud storage providers
+and sharing the dispersed cloud files with others.
+The intended audience for this document is the PASS team.
+Readers do not need a technical background.
 
 ## Problem
 
@@ -38,13 +41,52 @@ The follow are the tents of the design proposed in this document:
 
 * Meet users where they are to provide a trustworthy, intuitive solution.
 
-## Requirements
+## Context and Scope
+
+### Part 1: The needle in the stack of needles
+
+Many people in crisis already own an Android or Apple device, giving them access to *free, reliable, and secure* cloud storage.
+These devices are often equipped with a camera and support automatic backing up of files (e.g., photos, documents) to the cloud.
+For example, Android devices allow you to log into your Google account to seamlessly and automatically back up the photos you take to Google Drive.
+Here we identity the first part of our scope:
+
+> Storing digital files in cloud storage providers has never been easier,
+> as it is often an asynchronous background task on devices and the user is rarely required to be in the loop.
+> Remembering what files and where they are in the cloud, however, is a challenge.
+
+Some cloud storage providers provide users with a searchbox to enable users to search for documents.
+This can work well in some cases, but it under performs for photos.
+For example, it was not uncommon to see people endlessly scrolling through their cloud storage accounts trying to find the picture they took of their COVID-19 vaccination card.
+
+### Part 2: Users use multiple cloud storage providers
+
+The benefit of cloud storage providers is that they are tied to a personal account, not a specific device.
+These personal accounts, however, are specific to the cloud storage provider (e.g., Google accounts are tied to, you guessed it, Google Drive).
+When a person switches from one device vendor to another (e.g., from Android to Apple), digital documents become dispersed across multiple accounts and, therefore, multiple cloud storage providers.
+This brings us to the second part of our scope:
+
+> Users have digital documents across cloud storage providers.
+> They need a Rolodex to remember where their files, especially the important ones, are stored.
+
+We are very used to the idea of adding a friend's information into our cloud-backed contacts applications.
+Since no one bothers with remembering the layout of the city they live in anymore,
+we simply open our contacts application on our phones,
+type our friend's name,
+and click their address to open our phone's map navigation application.
+This is the type of workflow we are used to -- it's simple and intuitive.
+
+The system proposed in this document is the "digital file locator" analog for the contacts application that geo-locates a friend's house.
+"I know I took a picture of my COVID-19 vaccination card, but I can't remember if it was on my Google Pixel or my iPhone!"
+With the proposed system, this frustration will be a thing of the past.
+
+* Record the location (URL) and cloud storage service provider
 
 The following user stories capture the high-level requirements:
 
-* As an individual, I want to add a new necessary file to _\<storage service\>_ through Document Lookup.
-* As an individual, I want to add a necessary file to Document Lookup that already exists in my _\<storage service\>_ account.
+* As an individual, I want to add a new file to _\<storage service\>_ through Document Lookup.
+* As an individual, I want to add a file to Document Lookup that already exists in my _\<storage service\>_ account.
 * As an organization, I want to indicate to an individual whether she has the necessary documents in their Document Lookup for one of my services.
+* As an individual, I want to quickly send a copy of one or more files that are dispersed across one or more cloud storage services over email.
 
 Supported storage services shall be:
 
