@@ -17,7 +17,7 @@ The current PASS solution using the Solid ecosystem is attempting to solve the f
 However, this solution:
 
 * Does not meet end users where they are in their personal digital transformation journey.
-    * End users are likely already using storage services such as Google Drive and Dropbox.
+    * End users are likely already using storage services such as Google Drive, Apple iCloud, and Dropbox.
       Advanced users may be using object stores, such as Amazon Web Services S3.
       Requiring users to put documents in yet another storage service is a risk to adoption.
 * Relies on the Solid ecosystem, which is dependent on a number of web specifications that are not yet stable.
@@ -27,23 +27,27 @@ However, this solution:
 
 This proposal redefines the problem to be:
 
-* Users have access to many high-quality, free storage services, but they do not have a way to organize and recall where their necessary files are located across their digital storage accounts.
+* Users have access to many high-quality, free storage services, but they do not have a way to organize and recall where their files are located across their digital storage accounts.
+* Users do not have a way to bulk downloads files across their digital storage accounts.
+* Users do not have a way to bulk share files with other people across their digital storage accounts.
 
-The solution outlined in this document, referred to as Document Lookup, applies the concept of an address book to digital documents.
+The solution outlined in this document, referred to as FileNow, applies the concept of an address book to digital documents.
 Digital documents are stored in a variety of safe and secure third-party storage services.
 As users obtain more digital accounts and migrate to different mobile platforms, their preferred or default storage service changes.
 A consequence of this is that digital documents are spread across multiple storage services.
-Document Lookup's objective is to help users map a document type (e.g., drivers license, birth certificate) to its digital document.
+FileNow's objective is to help users map a document type (e.g., drivers license, birth certificate, vaccination record) to its digital document.
 
 ## Tenets
 
-The follow are the tents of the design proposed in this document:
+The tenets held through this design are:
 
-* Meet users where they are to provide a trustworthy, intuitive solution.
+* Meet users where they are in their personal digital transformation.
+* Embrace the marketplace of cloud vendors.
+* Digital documents are as unique as personal contacts and should be treated with the same sophistication.
 
 ## Context and Scope
 
-### Part 1: It's in here, I know it! Find the needle in a stack of needles.
+### Part 1: The needle in a stack of needles ("It's in here, I know it!").
 
 Many people in crisis already own an Android or Apple device, giving them access to *free, reliable, and secure* cloud storage.
 These devices are often equipped with a camera and support the automatic back up of files to the cloud.
@@ -91,16 +95,22 @@ Afterwards, you can use FileNow to search for any valid licenses you have in you
 
 A critical aspect to the problem PASS is solving is easing the transfer of documents from an individual to an organization.
 
-* Record the location (URL) and cloud storage service provider
+This needs more thought.
+Some ideas:
+
+* Bulk share
+* TODO
+
+## Requirements
 
 The following user stories capture the high-level requirements:
 
-* As an individual, I want to add a new file to _\<storage service\>_ through Document Lookup.
-* As an individual, I want to add a file to Document Lookup that already exists in my _\<storage service\>_ account.
-* As an organization, I want to indicate to an individual whether she has the necessary documents in their Document Lookup for one of my services.
+* As an individual, I want to add a new file to _\<storage service\>_ through FileNow.
+* As an individual, I want to add a file to FileNow that already exists in my _\<storage service\>_ account.
+* As an organization, I want to indicate to an individual whether she has the necessary documents in their FileNow for one of my services.
 * As an individual, I want to quickly send a copy of one or more files that are dispersed across one or more cloud storage services over email.
 
-Supported storage services shall be:
+Supported storage services will cover the dominate share of cloud storage and shall be:
 
 * Google Drive
 * Apple iCloud
@@ -111,9 +121,9 @@ TODO
 
 ## Appendix A: User Story Sequences
 
-### User Story: Store New File via Document Lookup to Google Drive
+### User Story: Store New File via FileNow to Google Drive
 
-As a user, I want to upload an important local file to my Google Drive account through Document Lookup.
+As a user, I want to upload an important local file to my Google Drive account through FileNow.
 
 ```mermaid
 sequenceDiagram
