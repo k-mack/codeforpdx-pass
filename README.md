@@ -5,6 +5,9 @@ This file contains a demo of
 1. Uploading a file to solid
 2. Creating and updating a ttl file with data entered through a form
 3. Querying the ttl file
+4. Deleting a file
+5. Cross pod query
+6. Cross pod write
 
 
 Please run
