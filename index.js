@@ -9,6 +9,7 @@ import {
   getStringNoLocaleAll,
   getUrlAll,
   getThingAll,
+  getPodUrlAll,
   saveSolidDatasetAt,
   buildThing,
   createSolidDataset,
@@ -17,7 +18,12 @@ import {
   deleteFile,
   createContainerAt,
 } from "@inrupt/solid-client";
-import { Session, fetch } from "@inrupt/solid-client-authn-browser";
+import {
+  Session,
+  fetch,
+  getDefaultSession,
+  handleIncomingRedirect,
+} from "@inrupt/solid-client-authn-browser";
 
 import { rdf } from "@inrupt/solid-client/dist/constants";
 import { SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf";
@@ -41,6 +47,7 @@ const writeForm = document.getElementById("writeForm");
 const queryForm = document.getElementById("queryData");
 const deleteForm = document.getElementById("deleteDocument");
 const crossPodQueryForm = document.getElementById("crossPodQueryDocument");
+const crossPodWrite = document.getElementById("crossPodWrite");
 
 // https://docs.inrupt.com/developer-tools/api/javascript/solid-client-authn-browser/classes/Session.html#login  ;
 // 1a. Start Login Process. Call login() function from session class, login is finshed by 1b. - handleRedirectAfterLogin();
@@ -73,6 +80,7 @@ async function handleRedirectAfterLogin() {
     document.getElementById("query").removeAttribute("hidden");
     document.getElementById("delete").removeAttribute("hidden");
     document.getElementById("crossPodQuery").removeAttribute("hidden");
+    document.getElementById("crossPodWrite").removeAttribute("hidden");
     // displays the logged in pod location in the console;
     console.log(`session info: ${session.info.webId.split("profile")[0]}`);
   }
@@ -313,7 +321,7 @@ async function deleteDocument() {
   console.log(documentDelete);
   const abc = await deleteFile(documentDelete, { fetch: session.fetch })
     .then((response) => {
-      console.log("hello", response);
+      console.log("deleted:", response);
     })
     .catch((error) => {
       console.log(error.message);
@@ -403,6 +411,62 @@ async function crossPodQuery() {
   }
 }
 
+// write file across pod
+async function cross_Pod_HandleFiles() {
+  // assigning string https://USERNAME.solidcommunity.net/ to const, replace username with unique webId;
+  const MY_POD_URL = `${
+    document.getElementById("input_crossPodWrite").value
+  }public/inbox/`;
+  console.log(MY_POD_URL);
+  // assigning fileList to first item placed in input field through browser;
+  const fileList = document.getElementById("cross_pod_input_file").files[0];
+  // assigning end date from form value;
+  // let endDateValue = document.getElementById("date").value;
+  // assigning description from form value;
+  let descriptionValue = document.getElementById("cross_pod_description").value;
+  // assigning selected identifier / document type from form;
+  let documentValue = document.getElementById("cross_pod_document").value;
+  // logs the file added through input_file HTML form;
+  console.log(fileList);
+
+  // uses the webID and value of drop down menu for document type, example: passport, bank statement;
+  const folder = MY_POD_URL + documentValue;
+  // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/resource_solidDataset.html#createcontainerat ;
+  // takes in a URL that is assigned to folder and returns a promise with dataset and server resource info;
+  await createContainerAt(folder, { fetch: session.fetch }).then((response) => {
+    console.log("Dataset Information", response);
+  });
+
+  // assigning function to upload file, provide file from HTML input defined above and url where to upload;
+  // function placeFileInContainer is defined below, so by the laws of javascript top down this confuses me but it works probably because its async;
+  const uploadedFile = await placeFileInContainer(fileList, `${MY_POD_URL}`);
+
+  // assigning url from where you want to call data. In this case folder as you need to check if ttl file already exists;
+  const exampleSolidDatasetURL = folder;
+
+  // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/resource_solidDataset.html#getsoliddataset  ;
+  let checkDataSetForTTL = await getSolidDataset(
+    // takes in the URL to fetch a SolidDataset from, in this case the pod URL + document value;
+    exampleSolidDatasetURL,
+    { fetch: session.fetch } // fetch function from authenticated session returns a promise resolving to dataset or rejecting if failed;
+  );
+
+  // check if ttl file already exists. If file exists you will append the existing ttl file;
+  // if none exist you need to create a new data set;
+  function checkTtl() {
+    const ttlExists = [];
+    // https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/thing_thing.html#getthingall  ;
+    // get all things in dataset;
+    const items = getThingAll(checkDataSetForTTL);
+    for (item of items) {
+      //check if item ends with ttl if yes push;
+      if (item.url.slice(-3) == "ttl") {
+        ttlExists.push(item.url);
+      }
+    }
+    return ttlExists;
+  }
+}
 // functions for buttons defined at start of program;
 buttonLogin.onclick = function () {
   console.log("logging in");
@@ -429,6 +493,10 @@ crossPodQueryForm.addEventListener("submit", (event) => {
   crossPodQuery();
 });
 
+crossPodWrite.addEventListener("submit", (event) => {
+  event.preventDefault();
+  cross_Pod_HandleFiles();
+});
 // 1 Import External Libraries The two libraries help with the intricate work of authentication with a Solid
 // data pod and all the needed work with RDF data.
 // 2 Setting Up Local Store A local RDF store or graph is created and can be used to add, remove, or update

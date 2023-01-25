@@ -2,14 +2,14 @@
  <html>
    <head>
      <meta charset="utf-8" />
-     <title>Getting Started: Inrupt JavaScript Client Libraries</title>
+     <title>POD tech POC</title>
      <script type="module" defer src="./index.js"></script>
      <link rel="stylesheet" href="/style.css" />
    </head>
 
    <body>
      <header>
-       <h2>Getting Started</h2>
+       <h2>Solid technical demo</h2>
        <h3>with Inrupt JavaScript Client Libraries : https://docs.inrupt.com/developer-tools/javascript/client-libraries/
       </h3>
      </header>
@@ -74,7 +74,7 @@
                <option value="License">Driver License</option>
              </select>
              <br/>
-            <button type="submit">
+            <button type="submit" id="query">
               Query
             </button>
           </form>
@@ -126,6 +126,47 @@
         <dl class="display">
           <dt>Writing status:&nbsp</dt>
           <dd id="labelcrossQueryDocument" class="labelStatus">...not written yet...</dd>
+        </dl>
+      </div>
+      <!-- cross pod write -->
+      <div hidden="hidden" id="crossPodWrite" class="panel">
+        <div class="row">
+          <form id="crossPodWrite">
+            <label id="writelabel" for="input_file">Paste users pod url to write to</label>
+            <input
+               size="60"
+              type="text"
+              id="input_crossPodWrite"
+              name="input_crossPodWrite"
+            />
+            <br>
+            <label for="cars">Choose Document Type To Upload</label>
+            <!-- documentValue in index.js -->
+            <br></br>
+            <select name="cross_pod_document" id="cross_pod_document">
+              <option value="Bank Statement">Bank Statement</option>
+              <option value="Passport">Passport</option>
+              <option value="Driver License">Driver License</option>
+            </select>
+            <br></br>
+             <br/>
+             <input
+                  type="file"
+                  id="cross_pod_input_file"
+                  name="file"
+                  accept=".pdf, .docx., .doc, .txt, .rtf"
+                />
+                <p>enter description</p>
+                <input id="cross_pod_description" size="50"></input>
+                <br>
+            <button type="submit">
+              Write to Pod
+            </button>
+          </form>
+        </div>
+        <dl class="display">
+          <dt>Writing status:&nbsp</dt>
+          <dd id="labelcrossWrite" class="labelStatus">...not written yet...</dd>
         </dl>
       </div>
      </div>
