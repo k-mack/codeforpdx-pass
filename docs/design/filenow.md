@@ -128,12 +128,12 @@ As a user, I want to upload an important local file to my Google Drive account t
 ```mermaid
 sequenceDiagram
     participant Alice as Individual
-    participant PFE as PASS Front End
-    participant PBE as PASS Back End
+    participant PFE as FileNow Front End
+    participant PBE as FileNow Back End
     participant GDrive as Google Drive
     %participant OneDrive as Microsoft OneDrive
 
-    Alice->>+PFE: PASS log in & consent
+    Alice->>+PFE: FileNow log in & consent
     PFE->>+PBE: Check credentials
     PBE-->>-PFE: 
     PFE-->>-Alice: Login successful
@@ -166,3 +166,44 @@ sequenceDiagram
     PBE->>PBE: Updated user-document-metadata database
     PBE-->>-Alice: Done!
 ```
+
+## Appendix B: Existing Solutions
+
+### MultCloud
+
+[MultCloud}(https://www.multcloud.com/) is a cloud file manager with an emphasis on easing the transfer of files across clouds.
+MultCloud users can also manage private file sharing or public file sharing from a single web interface.
+Below are the pricing tiers for MultCloud (full details are provided at <https://www.multcloud.com/price>):
+
+* Limited data plans
+  * 5 GB/Month - $0
+    * 5 GB free data traffic per month
+    * 2 threads for data transfer
+  * 1200 GB/Year - $9.99/Month or $119.88/Year
+    * 1200 GB data traffic per year
+    * 10 threads for data transfer
+    * Scheduled transfer/sync/backup
+  * 2400 GB/Year - $19.98/Month or $239.76/Year
+    * 2400 GB data traffic per year
+    * 10 threads for data transfer
+    * Scheduled transfer/sync/backup
+* Unlimited data plans
+  * Free - $0
+    * 5 GB free data traffic per month
+    * 2 threads for data transfer
+  * Yearly Unlimited - $299/Year
+    * Unlimited data traffic per year
+    * 10 threads for data transfer
+    * Scheduled transfer/sync/backup
+  * Lifetime Unlimited - $628 (onetime payment, lifetime use)
+    * Unlimited data traffic per year
+    * 10 threads for data transfer
+    * Scheduled transfer/sync/backup
+
+#### Comparison
+
+MultCloud is a comprehensive solution and offers nearly everything and more that FileNow proposes to offer.
+The advantage of FileNow is the ability to describe metadata about a file to quickly search for it.
+MultCloud also appeals to a different audience than FileNow.
+Users of FileNow are not concerned with transferring files between clouds.
+Instead, they are concerned with quickly finding an important file across their cloud accounts.
