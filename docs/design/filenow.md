@@ -28,7 +28,7 @@ However, this solution:
 This proposal redefines the problem to be:
 
 * Users have access to many high-quality, free storage services, but they do not have a way to organize and recall where their files are located across their digital storage accounts.
-* Users do not have a way to bulk downloads files across their digital storage accounts.
+* Users do not have a way to bulk download files across their digital storage accounts.
 * Users do not have a way to bulk share files with other people across their digital storage accounts.
 
 The solution outlined in this document, referred to as FileNow, applies the concept of an address book to digital documents.
