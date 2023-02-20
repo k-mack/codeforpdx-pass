@@ -2,6 +2,10 @@
 
 Access control is used in managing Solid Pods as it allows users to control who can access and modify their data. Solid Pods use ACLs to manage access to resources stored within them. For simplicity all examples in this document will be done through the solidcommunity interface.
 
+Typical ACL flow:
+
+[![ACL flow chart](https://mermaid.ink/img/pako:eNqVk01vwjAMhv-KlcuYBH-gh0l8w7RJSGy3XrzEhYg2QUmqaQL--5yU8rVx4Ga59vu8dp2dkFaRyERR2m-5RhfgY5QbgEHn05MDDIGqbfAQLKCU5D0gOPK2dpLAGghrgqUttYKFVc-5GUCv9wLDzikHck1y41Nhf_gWhRQFcpU2BLpI-Tqi1uhhG_Pe6yh8AsaKFsmEYSLskz1jQzTBunsYdfpNvfZMMJoUoFFnfU5zuS74w41KqzDe_es6dj9devNQWHdl65Cb8VnwphhL3u1xmD1MLmyuHJpw61OiuTP5fYSyaRXXpOlDCzmKzxeASrnYFmfUFfW-0HMrp4LTMiTeX9jsIdgkweYXV1LaVTNve2XN4Z1EGF-XgVunTWtuZm0wT8FrZ2yitOiKijeDWvFV7-Ip54IFKspFxqFCt8lFbg5ch3Wwyx8jRRZcTV1RbxUGGmnk_1KJrMDSc5aUDta9N88kvZbDL7KWGkE?type=png)](https://mermaid.live/edit#pako:eNqVk01vwjAMhv-KlcuYBH-gh0l8w7RJSGy3XrzEhYg2QUmqaQL--5yU8rVx4Ga59vu8dp2dkFaRyERR2m-5RhfgY5QbgEHn05MDDIGqbfAQLKCU5D0gOPK2dpLAGghrgqUttYKFVc-5GUCv9wLDzikHck1y41Nhf_gWhRQFcpU2BLpI-Tqi1uhhG_Pe6yh8AsaKFsmEYSLskz1jQzTBunsYdfpNvfZMMJoUoFFnfU5zuS74w41KqzDe_es6dj9devNQWHdl65Cb8VnwphhL3u1xmD1MLmyuHJpw61OiuTP5fYSyaRXXpOlDCzmKzxeASrnYFmfUFfW-0HMrp4LTMiTeX9jsIdgkweYXV1LaVTNve2XN4Z1EGF-XgVunTWtuZm0wT8FrZ2yitOiKijeDWvFV7-Ip54IFKspFxqFCt8lFbg5ch3Wwyx8jRRZcTV1RbxUGGmnk_1KJrMDSc5aUDta9N88kvZbDL7KWGkE)
+
 ## What are Access Control Lists (ACLs)?
 
 ACLs are a way of specifying who can access a resource and what actions they can perform on that resource. In Solid Pods, ACLs are represented as files that contain a list of agents and their corresponding permissions for a specific resource such as a file or folder. They can be located at https://ACCOUNTNAME.PROVIDERURL/DIRECTORY/.acl -- replacing ACCOUNTNAME with your account name, PROVIDERURL with the host url and DIRECTORY with the directory the ACL is responsible for.
@@ -34,4 +38,5 @@ Access control for a resource in a Solid Pod is specified using an `.acl` file t
 
 ## Conclusion
 
-ACLs are necessary for managing access to resources in Solid Pods. ACLs allow users to specify who can access their data and what actions they can perform on that data. This is a very important concept for PASS functionality and will need to well know to facilitate use of Solid pods.
+ACLs are necessary for managing access to resources in Solid Pods. ACLs allow users to specify who can access their data and what actions they can perform on that data. This is a very important concept for PASS functionality and will need to well know to facilitate use of Solid pods. future updates to this document will have functionality with examples of  
+[inrupts ACL library](https://docs.inrupt.com/developer-tools/api/javascript/solid-client/modules/acl_acl.html) added.
