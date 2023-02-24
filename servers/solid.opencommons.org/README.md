@@ -75,7 +75,7 @@ The deployment environment uses Apache2 (`httpd`) to host multiple services, inc
 sudo certbot certonly --apache -d solid.opencommons.org
 ```
 
-Next, update the Apache configuration file (/etc/httpd/conf/httpd.conf) to include the following:
+Next, update the Apache configuration file (`/etc/httpd/conf/httpd.conf`) to include the following:
 
 ```xml
 <VirtualHost *:443>
